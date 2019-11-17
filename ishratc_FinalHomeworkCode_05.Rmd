@@ -110,7 +110,7 @@ ci
 
 Now let's find the CI for our new model
 
-Since the new model values are in the form of a vector we would have to do the ci by hand.
+Since the new model values are in the form of a vector we would have to do the ci manually.
 
 ```{r}
 
