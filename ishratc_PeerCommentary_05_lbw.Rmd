@@ -1,0 +1,68 @@
+---
+title: "ishratc_OriginalHomeworkCode_05"
+author: "Ishrat Chowdhury"
+date: "November 6, 2019"
+output: html_document
+---
+
+Problems I had:
+
+1. When I am botostrapping, I get 1000 samples, but they are all the same numbers ina different order, asa result the model fot for each sample would be the same
+2. I can only fit a linear regression model for samples one at a time, I cannot find a way to do all 1000 at once
+3. I hit a wall here so I could not try getting the CI
+
+**Comments from Laura BW:**
+
+Hey Ish! It looks like you were on the right track here, though I am not the person to ask as this is all still so new to me as well! I was having similar issues with how to do bootstrapping for linear regressions and must have googled and went through like ten websites before I came up with something that *might* be remotely correct. But even then, not sure. Feel free to check it out and let me know if it makes sense or if it seems to be not what we are looking for. One thing I forgot to do that you did was make a data frame with just those two variables. I feel like the examples I was finding for the bootstrapping part had assumed this would be done already, so that may have affected my results. Maybe I will try again with doing this first!
+
+Clearly, you got this, as far as using R. It will be interesting in class to see what Chris' and everyone else's solutions were. Sometimes it is hard to tell what exactly we should be doing!
+
+
+First let's load in our data
+```{r}
+library(curl)
+library(ggplot2)
+f <- curl("https://raw.githubusercontent.com/fuzzyatelin/fuzzyatelin.github.io/master/AN597_Fall19/KamilarAndCooperData.csv")
+d <- read.csv(f, header = TRUE, stringsAsFactors = FALSE)
+attach(d)
+head(d)
+```
+
+Run a linear regression looking at log(HomeRange_km2) in relation to log(Body_mass_female_mean).
+
+```{r}
+d$logHomeRange <- log(d$HomeRange_km2)
+d$logFemaleBodyMass <- log(d$Body_mass_female_mean)
+m<-lm(data=d, logHomeRange ~ logFemaleBodyMass)
+m
+m$coefficients #lets see the coefficeints 
+#the intercept (B0) is -9.44 and the slope (B1) is 1.04
+```
+
+Now let's use bootstrapping to sample our data 1000 times. I first want to make a new data frme with just the 2 variables so it is easier to deal with.
+
+```{r}
+d2<-data.frame(d$logHomeRange, d$logFemaleBodyMass)
+d2
+```
+
+```{r}
+k <- 1000 # number of samples
+n <-  2 # size of each sample
+s <- NULL # dummy variable to hold each sample
+for (i in 2:k){
+    s[[i]] <- sample(d2,size=n, replace=FALSE)
+}
+head(s)
+summary(s)
+```
+
+
+```{r}
+m2<-lm(data=s[[2]], d.logHomeRange ~ d.logFemaleBodyMass)
+m2
+m2$coefficients
+```
+
+this finds the lm for one sample, not sure how to make it do it for all of them, also the numbers are going to be the same. 
+
