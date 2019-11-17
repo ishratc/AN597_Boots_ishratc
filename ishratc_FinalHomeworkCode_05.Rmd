@@ -110,15 +110,33 @@ ci
 
 Now let's find the CI for our new model
 
+Since the new model values are in the form of a vector we would have to do the ci by hand.
+
 ```{r}
-ci_intercepts <- confint(intercepts, level = 0.95)  #ci for intercepts
-ci_intercepts
 
-ci_slopes <- confint(slopes, level = 0.95)  #ci for slopes
-ci_slopes
+mi <- mean(intercepts)
+mi
 
-ci_sample <- confint(sample_model[[i]], level = 0.95)  #ci for intercepts
-ci_sample
+semi <- sd(intercepts)/sqrt(length(intercepts))
+semi
 
+lower <- mi - qnorm(1 - 0.05/2) * semi  # (1-alpha)/2 each in the upper and lower tails of the distribution
+upper <- mi + qnorm(1 - 0.05/2) * semi  # (1-alpha)/2 each in the upper and lower tails of the distribution
+ci_intercept <- c(lower, upper)
+ci_intercept
+
+#now for slope
+
+ms <- mean(slopes)
+ms
+
+sems <- sd(intercepts)/sqrt(length(slopes))
+sems
+
+lower <- ms - qnorm(1 - 0.05/2) * sems  # (1-alpha)/2 each in the upper and lower tails of the distribution
+upper <- ms + qnorm(1 - 0.05/2) * sems  # (1-alpha)/2 each in the upper and lower tails of the distribution
+ci_slope <- c(lower, upper)
+ci_slope
 ```
 
+Both of these are now in much narrower intervals. This makes sense since these are from the new sample so there is "more confidence" that the valyes would fall in between these two values. We can be more sure about the range of values now that we have a bigger sample.
